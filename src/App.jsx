@@ -159,7 +159,12 @@ function App() {
       return;
     }
 
-    fetch("http://localhost:5000/send-alert", {
+    const API_URL =
+      window.location.hostname === "localhost"
+        ? "http://localhost:5000/send-alert"
+        : "https://shecurity-v1.onrender.com/send-alert";
+
+    fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ phone, ...userLocation }),
