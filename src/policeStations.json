@@ -1,0 +1,44 @@
+[
+  {
+    "name": "Police Station A",
+    "latitude": 22.5726,
+    "longitude": 88.3639,
+    "phone": "+91XXXXXXXXXX",
+    "location": "Kolkata, West Bengal, India"
+  },
+  {
+    "name": "Police Station B",
+    "latitude": 28.7041,
+    "longitude": 77.1025,
+    "phone": "+91XXXXXXXXXX",
+    "location": "New Delhi, India"
+  },
+  {
+    "name": "Police Station C",
+    "latitude": 19.076,
+    "longitude": 72.8777,
+    "phone": "+91XXXXXXXXXX",
+    "location": "Mumbai, Maharashtra, India"
+  },
+  {
+    "name": "Police Station D",
+    "latitude": 13.0827,
+    "longitude": 80.2707,
+    "phone": "+91XXXXXXXXXX",
+    "location": "Chennai, Tamil Nadu, India"
+  },
+  {
+    "name": "Police Station E",
+    "latitude": 12.9716,
+    "longitude": 77.5946,
+    "phone": "+91XXXXXXXXXX",
+    "location": "Bangalore, Karnataka, India"
+  },
+  {
+    "name": "Police Station F",
+    "latitude": 23.5726,
+    "longitude": 88.365,
+    "phone": "+91XXXXXXXXXX",
+    "location": "Kolkata, India"
+  }
+]
