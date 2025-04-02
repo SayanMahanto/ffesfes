@@ -149,8 +149,8 @@ function App() {
       return;
     }
 
-    setItemWithExpiry("Email", email, 24);
-    setItemWithExpiry("Phone", phone, 24);
+    setItemWithExpiry("Email", email, 96);
+    setItemWithExpiry("Phone", phone, 96);
 
     setDisplayPolice("mt-8 w-80 mb-8");
 
@@ -178,8 +178,10 @@ function App() {
     <>
       <ToastContainer />
       <div className="min-h-screen flex flex-col items-center bg-white">
-        <div className="w-full bg-red-600 text-white flex justify-between p-4">
-          <h1 className="text-xl font-bold">SHEcurity</h1>
+        <div className="w-full bg-red-600 text-white flex justify-center items-center p-4">
+          <h1 className="text-3xl font-bold flex items-center justify-center text-center">
+            SHEcurity
+          </h1>
         </div>
 
         <div className="flex flex-col items-center mt-10">
@@ -189,6 +191,25 @@ function App() {
           >
             HELP
           </button>
+          <button className="mt-10 bg-red-600 text-white text-2xl font-bold h-10 w-10 rounded-full shadow-xl shadow-black cursor-pointer flex items-center justify-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="lucide lucide-mic-icon lucide-mic"
+            >
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+              <line x1="12" x2="12" y1="19" y2="22" />
+            </svg>
+          </button>
+
           <button
             onClick={resetHandle}
             className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-2.5 me-2 my-5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
