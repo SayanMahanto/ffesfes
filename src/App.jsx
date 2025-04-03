@@ -69,7 +69,10 @@ function App() {
       lowerTranscript.includes("emergency") ||
       lowerTranscript.includes("police")
     ) {
-      console.log("Emergency detected! Transcript:", lowerTranscript);
+      console.log(
+        "Emergency detected! Here is the Transcript:",
+        lowerTranscript
+      );
       handleHelp();
       resetTranscript();
     }
