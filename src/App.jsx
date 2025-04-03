@@ -5,6 +5,9 @@ import { ArrowUpRight } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 
 const userIcon = new L.Icon({
   iconUrl: "https://cdn-icons-png.flaticon.com/512/484/484167.png",
@@ -24,6 +27,53 @@ function App() {
   const [userLocation, setUserLocation] = useState(null);
   const [nearestStations, setNearestStations] = useState([]);
   const [emailPhone, setEmailPhone] = useState(true);
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition,
+    interimTranscript, // Added to check partial results
+  } = useSpeechRecognition();
+
+  // Start speech recognition on mount with continuous listening
+  useEffect(() => {
+    if (!browserSupportsSpeechRecognition) {
+      alert("Voice recognition is not supported in this browser.");
+      return;
+    }
+
+    const startListening = () => {
+      console.log("Starting speech recognition...");
+      SpeechRecognition.startListening({
+        continuous: true,
+        language: "en-US",
+        interimResults: true, // Show partial results for debugging
+      });
+    };
+
+    startListening();
+
+    return () => {
+      console.log("Stopping speech recognition on unmount...");
+      SpeechRecognition.stopListening();
+    };
+  }, [browserSupportsSpeechRecognition]);
+
+  // Handle emergency phrases with debugging
+  useEffect(() => {
+    console.log("Current transcript:", transcript);
+    console.log("Interim transcript:", interimTranscript); // Log partial results
+    const lowerTranscript = transcript.toLowerCase().trim();
+    if (
+      lowerTranscript.includes("help") ||
+      lowerTranscript.includes("emergency") ||
+      lowerTranscript.includes("police")
+    ) {
+      console.log("Emergency detected! Transcript:", lowerTranscript);
+      handleHelp();
+      resetTranscript();
+    }
+  }, [transcript, interimTranscript, resetTranscript]);
 
   const getDistance = (lat1, lon1, lat2, lon2) => {
     const R = 6371;
@@ -36,41 +86,6 @@ function App() {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   };
-
-  const startListening = () => {
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      alert("Voice recognition not supported in this browser.");
-      return;
-    }
-
-    const recognition = new SpeechRecognition();
-    recognition.continuous = true;
-    recognition.lang = "en-US";
-
-    recognition.onresult = (event) => {
-      const transcript = event.results[event.results.length - 1][0].transcript
-        .toLowerCase()
-        .trim();
-
-      console.log("Recognized Speech:", transcript);
-
-      if (
-        transcript.includes("help") ||
-        transcript.includes("emergency") ||
-        transcript.includes("police")
-      ) {
-        handleHelp();
-      }
-    };
-
-    recognition.start();
-  };
-
-  useEffect(() => {
-    startListening();
-  }, []);
 
   const fetchUserLocation = () => {
     if ("geolocation" in navigator) {
@@ -144,6 +159,7 @@ function App() {
   };
 
   const handleHelp = () => {
+    console.log("handleHelp called");
     if (!email || !phone) {
       notify();
       return;
@@ -174,6 +190,18 @@ function App() {
       .catch((err) => alert("Error sending alert: " + err.message));
   };
 
+  const toggleListening = () => {
+    if (listening) {
+      SpeechRecognition.stopListening();
+    } else {
+      SpeechRecognition.startListening({
+        continuous: true,
+        language: "en-US",
+        interimResults: true,
+      });
+    }
+  };
+
   return (
     <>
       <ToastContainer />
@@ -191,7 +219,14 @@ function App() {
           >
             HELP
           </button>
-          <button className="mt-10 bg-red-600 text-white text-2xl font-bold h-10 w-10 rounded-full shadow-xl shadow-black cursor-pointer flex items-center justify-center">
+
+          {/* Microphone Toggle Button */}
+          <button
+            onClick={toggleListening}
+            className={`mt-10 text-2xl font-bold h-10 w-10 rounded-full shadow-xl shadow-black cursor-pointer flex items-center justify-center ${
+              listening ? "bg-green-600" : "bg-red-600"
+            } text-white`}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -202,13 +237,24 @@ function App() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="lucide lucide-mic-icon lucide-mic"
             >
               <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
               <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
               <line x1="12" x2="12" y1="19" y2="22" />
             </svg>
           </button>
+
+          {/* Debug Output */}
+          <div className="mt-4 text-center">
+            <p>Mic: {listening ? "On" : "Off"}</p>
+            <p>
+              Transcript: {transcript || "Say 'help', 'emergency', or 'police'"}
+            </p>
+            <p>
+              Interim Transcript:{" "}
+              {interimTranscript || "No partial results yet"}
+            </p>
+          </div>
 
           <button
             onClick={resetHandle}
@@ -271,7 +317,7 @@ function App() {
                 className="p-3 bg-gray-100 shadow flex justify-between"
               >
                 <div>
-                  <h2 className="text-lg font-semibold">{station.name}</h2>
+                  <h2 className="textLg font-semibold">{station.name}</h2>
                   <p>📍 Distance: {station.distance.toFixed(2)} km</p>
                 </div>
                 <a
